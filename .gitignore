@@ -6,3 +6,4 @@ __pycache__/
 *.pyc
 auth_info/
 scan.html
+paused_chats.json

@@ -20,6 +20,34 @@ let connectedNumber = null;
 let connectedSince = null;
 const memoryLogs = [];
 
+// Human Takeover Tracker: remoteJid -> timestamp until paused (24h default)
+const PAUSED_CHATS_FILE = path.join(process.cwd(), 'paused_chats.json');
+const PAUSE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+function loadPausedChats() {
+  try {
+    if (fs.existsSync(PAUSED_CHATS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(PAUSED_CHATS_FILE, 'utf-8'));
+      const map = new Map();
+      const now = Date.now();
+      for (const [k, v] of Object.entries(data)) {
+        if (Number(v) > now) map.set(k, Number(v));
+      }
+      return map;
+    }
+  } catch (e) {}
+  return new Map();
+}
+
+function savePausedChats(map) {
+  try {
+    const obj = Object.fromEntries(map);
+    fs.writeFileSync(PAUSED_CHATS_FILE, JSON.stringify(obj, null, 2), 'utf-8');
+  } catch (e) {}
+}
+
+const pausedChats = loadPausedChats();
+
 // Anti-Spam tracker: senderId -> { lastText, count, lastTime }
 const userSpamTracker = new Map();
 
@@ -521,10 +549,42 @@ async function startWhatsAppBot() {
         }
       }
 
-      // If sent by user themselves, only reply if it's Self-Chat OR an explicit test command
-      if (msg.key.fromMe && !isSelfChat && !isExplicitTest) {
-        log(`ℹ️ [Outgoing Skipped] Message sent by you to ${remoteNum}. Bot only replies in Self-Chat ("Message yourself") or incoming chats.`);
-        continue;
+      // --- HUMAN TAKEOVER / OWNER INTERVENTION ---
+      if (msg.key.fromMe && !isSelfChat) {
+        const cleanCmd = messageText.trim().toLowerCase();
+
+        // Manual command: Resume AI for this chat
+        if (cleanCmd === '!start' || cleanCmd === '!resume' || cleanCmd === '!ai on' || cleanCmd === '!bot on') {
+          pausedChats.delete(remoteJid);
+          savePausedChats(pausedChats);
+          log(`▶️ [AI Resumed] You resumed AI auto-reply for ${remoteNum}`);
+          try {
+            await sock.sendMessage(remoteJid, { text: "🤖 [Devzk AI resumed for this chat]" });
+          } catch (e) {}
+          continue;
+        }
+
+        // Manual command: Pause AI for this chat
+        if (cleanCmd === '!stop' || cleanCmd === '!pause' || cleanCmd === '!ai off' || cleanCmd === '!bot off') {
+          const pauseUntil = Date.now() + PAUSE_DURATION_MS;
+          pausedChats.set(remoteJid, pauseUntil);
+          savePausedChats(pausedChats);
+          log(`⏸️ [AI Paused Manually] You paused AI auto-reply for ${remoteNum} for 24 hours.`);
+          try {
+            await sock.sendMessage(remoteJid, { text: "⏸️ [Devzk AI paused. Human representative is handling this chat]" });
+          } catch (e) {}
+          continue;
+        }
+
+        // Automatic Human Takeover: If you send ANY normal message from your phone to this client,
+        // automatically pause the AI for 24 hours so you can talk freely without AI interruption!
+        if (!isExplicitTest) {
+          const pauseUntil = Date.now() + PAUSE_DURATION_MS;
+          pausedChats.set(remoteJid, pauseUntil);
+          savePausedChats(pausedChats);
+          log(`👤 [Human Takeover] You sent a message to ${remoteNum}. AI auto-reply paused for 24 hours on this chat.`);
+          continue;
+        }
       }
 
       // Clean query text if it used a command prefix
@@ -535,7 +595,42 @@ async function startWhatsAppBot() {
       if (!queryText) queryText = "Salam";
 
       const senderDisplay = isSelfChat ? `Self-Chat (${myPhone})` : remoteNum;
+
+      // 0. Check Human Takeover status: If paused, skip auto-reply
+      if (!isSelfChat) {
+        const pauseUntil = pausedChats.get(remoteJid);
+        if (pauseUntil) {
+          if (Date.now() < pauseUntil) {
+            log(`⏸️ [Human Takeover Active] Skipping AI auto-reply for ${senderDisplay} (owner is chatting with this contact).`);
+            continue;
+          } else {
+            pausedChats.delete(remoteJid);
+            savePausedChats(pausedChats);
+            log(`▶️ [Human Takeover Expired] 24 hours passed. Resuming AI auto-reply for ${senderDisplay}.`);
+          }
+        }
+      }
+
       log(`\n📩 [Message Received] From ${senderDisplay}: "${queryText}"`);
+
+      // Check if customer requested Human Representative / Handover
+      const handoverRegex = /\b(human|agent|insan|real person|representative|live support|support team|bande se baat|call me|call karo|direct call)\b/i;
+      if (handoverRegex.test(queryText) && !isSelfChat) {
+        const pauseUntil = Date.now() + PAUSE_DURATION_MS;
+        pausedChats.set(remoteJid, pauseUntil);
+        savePausedChats(pausedChats);
+
+        const isEnglish = queryText.toLowerCase().includes('english') || queryText.toLowerCase().includes('representative');
+        const handoverReply = isEnglish
+          ? "Sure! I have notified our team. A human representative from Devzk will connect with you shortly.\n\nWebsite: https://devzk-portfolio.pages.dev/"
+          : "Ji bilkul! Main aapki chat hamari team ko forward kar raha hoon. Hamara representative jald aap se rabta karega.\n\nWebsite: https://devzk-portfolio.pages.dev/";
+
+        log(`👤 [Human Handover Triggered] AI paused for ${senderDisplay} as they asked for human support.`);
+        try {
+          await sock.sendMessage(remoteJid, { text: handoverReply }, { quoted: msg });
+        } catch (e) {}
+        continue;
+      }
 
       // 0. Anti-Spam protection: if repeated messages (e.g. 3 times "hi"), warn on 3rd, drop on 4th+
       const spamStatus = checkSpam(remoteNum || myPhone, queryText);
@@ -637,6 +732,7 @@ function renderWebPage() {
         <div>🤖 <b>AI Model:</b> Google Gemini (${MODEL_NAME})</div>
         <div>🕒 <b>Connected Since:</b> ${connectedSince ? connectedSince.toLocaleTimeString() : 'Active'}</div>
         <div>⚡ <b>Status:</b> Auto-replying to all incoming messages</div>
+        <div>👤 <b>Human Takeover (Paused):</b> ${pausedChats.size} chat(s)</div>
       </div>
     ` : isWaitingQr ? `
       <div class="badge badge-amber"><span class="dot"></span> SCAN REQUIRED</div>
