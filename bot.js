@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import http from 'http';
+import { exec } from 'child_process';
 
 dotenv.config();
 
@@ -613,6 +614,26 @@ async function startWhatsAppBot() {
 
       log(`\n📩 [Message Received] From ${senderDisplay}: "${queryText}"`);
 
+      // Owner Command: Auto-update from GitHub
+      if (isSelfChat && (queryText === '!update' || queryText === '!pull')) {
+        log('🔄 [Auto-Update] Triggered via WhatsApp Self-Chat. Running git pull...');
+        try {
+          await sock.sendMessage(remoteJid, { text: "🔄 [Devzk Update] Pulling latest code from GitHub..." });
+        } catch(e) {}
+        exec('git pull', (err, stdout, stderr) => {
+          const msgText = err 
+            ? `❌ Update failed:\n${err.message}` 
+            : `✅ Successfully updated from GitHub!\n${stdout}\nBot is restarting now with new updates...`;
+          log(msgText);
+          sock.sendMessage(remoteJid, { text: msgText }).finally(() => {
+            if (!err) {
+              setTimeout(() => process.exit(0), 1000);
+            }
+          });
+        });
+        continue;
+      }
+
       // Check if customer requested Human Representative / Handover
       const handoverRegex = /\b(human|agent|insan|real person|representative|live support|support team|bande se baat|call me|call karo|direct call)\b/i;
       if (handoverRegex.test(queryText) && !isSelfChat) {
@@ -787,6 +808,22 @@ const server = http.createServer((req, res) => {
       model: MODEL_NAME,
       recentLogs: memoryLogs.slice(-5)
     }));
+    return;
+  }
+
+  if (url === '/update' || url === '/pull') {
+    log('🔄 [Auto-Update] Web request /update received. Running git pull...');
+    exec('git pull', (err, stdout, stderr) => {
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      if (err) {
+        log(`❌ Update failed: ${err.message}`);
+        res.end(`Update Failed: ${err.message}\n${stderr}`);
+      } else {
+        log(`✅ Update successful:\n${stdout}`);
+        res.end(`Update Successful!\n${stdout}\nRestarting bot in 1 second...`);
+        setTimeout(() => process.exit(0), 1000);
+      }
+    });
     return;
   }
 
