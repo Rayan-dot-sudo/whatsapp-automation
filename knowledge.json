@@ -1,47 +1,74 @@
 {
   "company_profile": {
-    "name": "Apni Company Ka Naam",
-    "business_field": "Services / E-commerce / Tech / Trading",
-    "description": "Hum customers ko best quality services aur products provide karte hain.",
-    "support_phone": "+92 300 0000000",
-    "office_address": "Office #12, Commercial Area, City Name",
-    "working_days": "Monday se Saturday",
-    "working_hours": "Subah 10:00 AM se Shaam 7:00 PM tak",
-    "sunday_status": "Sunday ko office band rehta hai, lekin online queries receive hoti hain"
+    "name": "Devzk",
+    "business_field": "Software Development, AI Solutions & Digital Creative Agency",
+    "description": "Devzk is a modern tech and creative agency offering Software Development, Web Development, AI Automations, Chatbots, and Multimedia services.",
+    "office_status": "Hum abhi physically office nahi rakhte, hum 100% remotely kaam karte hain (Worldwide / Remote Agency).",
+    "working_mode": "Remote / Online",
+    "support": "WhatsApp & Online Consultation"
   },
-  "services_and_products": [
+  "services": [
     {
-      "title": "Service / Product 1",
-      "price": "Rs. 10,000",
-      "description": "Service 1 ki mukhtasar tafseel aur delivery time (e.g. 3-5 days)."
+      "id": 1,
+      "name": "Software Development",
+      "description": "Custom desktop, web, and enterprise software solutions tailored to your business needs."
     },
     {
-      "title": "Service / Product 2",
-      "price": "Rs. 25,000",
-      "description": "Service 2 ki mukhtasar tafseel aur delivery time (e.g. 7 days)."
+      "id": 2,
+      "name": "Website Development",
+      "description": "Modern, responsive, fast websites, web apps, and eCommerce stores."
+    },
+    {
+      "id": 3,
+      "name": "AI Automations",
+      "description": "End-to-end business workflow automations using AI to save time and reduce manual work."
+    },
+    {
+      "id": 4,
+      "name": "AI Chatbots & AI Integrations",
+      "description": "Intelligent WhatsApp, web, and CRM chatbots integrated with OpenAI, Gemini, Claude, etc."
+    },
+    {
+      "id": 5,
+      "name": "Video Editing",
+      "description": "Professional video editing for YouTube, Reels, TikTok, ads, and corporate videos."
+    },
+    {
+      "id": 6,
+      "name": "Graphic Designing",
+      "description": "Logos, brand identity, social media posts, UI/UX designs, and marketing graphics."
+    },
+    {
+      "id": 7,
+      "name": "AI Video Editing",
+      "description": "Next-gen AI powered video editing, generative video, captions, and AI avatars."
+    },
+    {
+      "id": 8,
+      "name": "AI Photoshoots",
+      "description": "Hyper-realistic AI model photoshoots, product staging, and creative portraits without physical cameras."
+    },
+    {
+      "id": 9,
+      "name": "Other Services",
+      "description": "Custom tech and creative requests based on client requirements."
     }
   ],
-  "payment_methods": [
-    "Bank Transfer (Meezan Bank, HBL)",
-    "JazzCash",
-    "EasyPaisa",
-    "SadaPay / NayaPay"
-  ],
-  "faqs": [
-    {
-      "question": "Aap ka office kahan hai?",
-      "answer": "Hamara office [City Name] mein waqay hai. Working hours (10 AM - 7 PM) ke doran aap visit kar sakte hain."
+  "common_answers": {
+    "company_name": {
+      "english": "Our company name is Devzk.",
+      "roman_urdu": "Hamari company ka naam Devzk hai.",
+      "urdu": "ہماری کمپنی کا نام Devzk ہے۔"
     },
-    {
-      "question": "Kya payment advance hoti hai?",
-      "answer": "Ji haan, kaam shuru karne ke liye 50% advance aur baqi payment kaam mukammal hone par hoti hai."
+    "office_location": {
+      "english": "Currently, we don't have a physical office; we work 100% remotely and serve clients globally.",
+      "roman_urdu": "Hamara abhi koi physical office nahi hai, hum mukammal tor par remotely kaam karte hain.",
+      "urdu": "فی الحال ہمارا کوئی فزیکل آفس نہیں ہے، ہم مکمل طور پر ریموٹلی کام کرتے ہیں۔"
     },
-    {
-      "question": "Mujhe human representative se baat karni hai",
-      "answer": "Ji zaroor! Main ne aapki request team ko note karwa di hai. Hamara representative jald hi isi chat par aap se rabta karega."
+    "services_summary": {
+      "english": "At Devzk, we provide Software & Web Development, AI Automations, AI Chatbots, Video Editing, Graphic Designing, AI Video Editing, and AI Photoshoots.",
+      "roman_urdu": "Devzk mein hum Software Development, Website Development, AI Automations, AI Chatbots, Video Editing, Graphic Designing, AI Video Editing, aur AI Photoshoots provide karte hain.",
+      "urdu": "ہم سافٹ ویئر، ویب سائٹ ڈویلپمنٹ، اے آئی آٹومیشنز، چیٹ بوٹس، ویڈیو ایڈیٹنگ، گرافک ڈیزائننگ اور اے آئی فوٹو شوٹس کی خدمات فراہم کرتے ہیں۔"
     }
-  ],
-  "escalation_policy": {
-    "unknown_query": "Agar customer koi aisi cheez pooche jo is file mein na ho, toh andaza mat lagao. Polite tareeqay se kaho: 'Main ne aapka sawal note kar liya hai, hamari team ka representative jald aap se rabta kar ke mukammal rehnumai karega.'"
   }
 }
