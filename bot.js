@@ -42,18 +42,33 @@ Aap Devzk company ke professional customer support representative hain.
 Aapka kaam customer ke WhatsApp message ka seedha, asaan aur natural jawab dena hai.
 
 COMPANY RULES & IDENTITY:
-1. COMPANY NAME: Hamari company ka naam "Devzk" hai.
-   - Agar koi English mein pooche: "Our company name is Devzk."
-   - Agar koi Roman Urdu mein pooche: "Hamari company ka naam Devzk hai."
-   - Agar koi Urdu mein pooche: "ہماری کمپنی کا نام Devzk ہے۔"
+1. COMPANY NAME & WEBSITE:
+   - Company ka naam "Devzk" hai.
+   - Official Website & Portfolio: https://devzk-portfolio.pages.dev/
+   - Company se related kisi bhi sawal ya website poochne par website link lazmi share karo.
 
-2. OFFICE LOCATION:
-   - Hamara koi physical office nahi hai, hum abhi remotely kaam karte hain (100% remote agency).
+2. CEO, FOUNDER & OWNERSHIP:
+   - Agar koi pooche CEO, Founder, Owner ya company ko kon sambhal / lead kar raha hai:
+     - English: "The CEO and Founder of Devzk is Muhammad Ryan Zubair, and the Co-Founder is Muhammad Toseef.\n\nWebsite: https://devzk-portfolio.pages.dev/"
+     - Roman Urdu: "CEO Muhammad Ryan Zubair hain, Founder bhi wahi hain aur Co-Founder Muhammad Toseef hain.\n\nWebsite: https://devzk-portfolio.pages.dev/"
+     - Urdu: "سی ای او اور بانی محمد ریان زبیر ہیں اور کو-فاؤنڈر محمد توصیف ہیں۔\n\nویب سائٹ: https://devzk-portfolio.pages.dev/"
+
+3. TEAM MEMBERS:
+   - Agar koi team members ke baare mein pooche:
+     Devzk Team Members:
+     • CEO: Muhammad Ryan Zubair
+     • COO: Muhammad Toseef
+     • CMO: Muhammad Ahmad Kashif
+     • CTO: Haider Ali
+     • Manager: Meharzad Waseem
+     Website: https://devzk-portfolio.pages.dev/
+
+4. OFFICE LOCATION:
+   - Hamara koi physical office nahi hai, hum abhi remotely kaam karte hain (100% remote agency worldwide).
    - English: "Currently, we don't have a physical office; we work 100% remotely."
    - Roman Urdu: "Abhi hamara koi physical office nahi hai, hum mukammal tor par remotely kaam karte hain."
-   - Urdu: "فی الحال ہمارا کوئی فزیکل آفس نہیں ہے، ہم ریموٹلی کام کرتے ہیں۔"
 
-3. SERVICES WE PROVIDE:
+5. SERVICES WE PROVIDE:
    1) Software Development
    2) Website Development
    3) AI Automations
@@ -62,17 +77,16 @@ COMPANY RULES & IDENTITY:
    6) Graphic Designing
    7) AI Video Editing
    8) AI Photoshoots
-   aur client ki zaroorat ke mutabiq doosri customized services.
+   aur customized digital solutions.
 
-4. LANGUAGE MATCHING (STRICT & EXACT):
+6. LANGUAGE MATCHING (STRICT & EXACT):
    - Agar customer ENGLISH mein message kare -> Sirf ENGLISH mein fluent aur natural jawab do.
    - Agar customer ROMAN URDU mein message kare -> Sirf ROMAN URDU mein natural jawab do.
    - Agar customer URDU SCRIPT (اردو) mein likhe -> Sirf URDU rasmul-khat mein jawab do.
 
-5. SIMPLE & CONCISE:
+7. SIMPLE & CONCISE:
    - WhatsApp par max 1 se 3 sentences mein seedha aur to-the-point jawab do.
-   - Lambay essays, lists ya robotic baten mat likho jab tak customer khud tafseel na maangay.
-   - Kabhi mat bolo "As an AI language model..." ya "I am an artificial intelligence". Always Devzk ki team ban kar baat karo.
+   - Kabhi mat bolo "As an AI language model...". Hamesha Devzk team ban kar baat karo.
 
 === COMPANY KNOWLEDGE BASE ===
 ${kb}
@@ -94,30 +108,51 @@ function getFastPathReply(text) {
     return "وعلیکم السلام! Devzk میں خوش آمدید۔ ہم آپ کی کیا مدد کر سکتے ہیں؟";
   }
 
-  // 2. Company Name
-  if (t === 'company name' || t === 'what is your company name' || t === 'company ka name' || t === 'company ka naam' || t === 'company naam' || (t.includes('company') && (t.includes('name') || t.includes('naam')))) {
-    if (t.includes('what') || t.includes('your') || t.includes('english')) {
-      return "Our company name is Devzk. We provide Software Development, Web Development, AI Automations, and Creative Media services.";
+  // 2. CEO / Founder / Owner / Leadership
+  if (t.includes('ceo') || t.includes('founder') || t.includes('owner') || t.includes('sambhal') || t.includes('lead') || t.includes('malik')) {
+    if (t.includes('who') || t.includes('english') || t.includes('is')) {
+      return "The CEO and Founder of Devzk is Muhammad Ryan Zubair, and the Co-Founder is Muhammad Toseef.\n\nWebsite: https://devzk-portfolio.pages.dev/";
     }
-    return "Hamari company ka naam Devzk hai. Hum Software Development, Website Development, AI Automations aur Creative services provide karte hain.";
+    return "CEO Muhammad Ryan Zubair hain, Founder bhi wahi hain aur Co-Founder Muhammad Toseef hain.\n\nWebsite: https://devzk-portfolio.pages.dev/";
   }
 
-  // 3. Office Location
+  // 3. Team Members
+  if (t.includes('team') || t.includes('member') || t.includes('members') || t.includes('staff')) {
+    return "Devzk Team Members:\n• CEO: Muhammad Ryan Zubair\n• COO: Muhammad Toseef\n• CMO: Muhammad Ahmad Kashif\n• CTO: Haider Ali\n• Manager: Meharzad Waseem\n\nWebsite: https://devzk-portfolio.pages.dev/";
+  }
+
+  // 4. Website / Portfolio
+  if (t.includes('website') || t.includes('portfolio') || t.includes('link') || t.includes('site') || t.includes('web site')) {
+    if (t.includes('what') || t.includes('where') || t.includes('give') || t.includes('your')) {
+      return "You can explore our official website and portfolio here:\nhttps://devzk-portfolio.pages.dev/";
+    }
+    return "Aap hamari official website aur portfolio yahan dekh sakte hain:\nhttps://devzk-portfolio.pages.dev/";
+  }
+
+  // 5. Company Name
+  if (t === 'company name' || t === 'what is your company name' || t === 'company ka name' || t === 'company ka naam' || t === 'company naam' || (t.includes('company') && (t.includes('name') || t.includes('naam')))) {
+    if (t.includes('what') || t.includes('your') || t.includes('english')) {
+      return "Our company name is Devzk. We provide Software Development, Web Development, AI Automations, and Creative Media services.\n\nWebsite: https://devzk-portfolio.pages.dev/";
+    }
+    return "Hamari company ka naam Devzk hai. Hum Software Development, Website Development, AI Automations aur Creative services provide karte hain.\n\nWebsite: https://devzk-portfolio.pages.dev/";
+  }
+
+  // 6. Office Location
   if ((t.includes('office') || t.includes('location') || t.includes('address')) && 
       (t.includes('where') || t.includes('kahan') || t.includes('kidhar') || t.includes('address') || t.includes('kider'))) {
     if (t.includes('where') || t.includes('location')) {
-      return "Currently, we don't have a physical office; we work 100% remotely and serve clients worldwide.";
+      return "Currently, we don't have a physical office; we work 100% remotely and serve clients worldwide.\n\nWebsite: https://devzk-portfolio.pages.dev/";
     }
-    return "Hamara abhi koi physical office nahi hai, hum mukammal tor par remotely kaam karte hain.";
+    return "Hamara abhi koi physical office nahi hai, hum mukammal tor par remotely kaam karte hain.\n\nWebsite: https://devzk-portfolio.pages.dev/";
   }
 
-  // 4. Services
+  // 7. Services
   if (/^(services|service|what services|kya services|services list|list of services|services kya hain)$/.test(t) || 
       (t.includes('service') && (t.includes('kya') || t.includes('what') || t.includes('list') || t.includes('provide')))) {
     if (t.includes('what') || t.includes('list of')) {
-      return "At Devzk, we provide:\n1. Software Development\n2. Website Development\n3. AI Automations\n4. AI Chatbots / AI Integrations\n5. Video Editing\n6. Graphic Designing\n7. AI Video Editing\n8. AI Photoshoots\n\nWhich service are you interested in?";
+      return "At Devzk, we provide:\n1. Software Development\n2. Website Development\n3. AI Automations\n4. AI Chatbots / AI Integrations\n5. Video Editing\n6. Graphic Designing\n7. AI Video Editing\n8. AI Photoshoots\n\nWebsite: https://devzk-portfolio.pages.dev/\n\nWhich service are you interested in?";
     }
-    return "Devzk mein hum yeh services provide karte hain:\n1. Software Development\n2. Website Development\n3. AI Automations\n4. AI Chatbots / AI Integrations\n5. Video Editing\n6. Graphic Designing\n7. AI Video Editing\n8. AI Photoshoots\n\nAapko kis service ki zaroorat hai?";
+    return "Devzk mein hum yeh services provide karte hain:\n1. Software Development\n2. Website Development\n3. AI Automations\n4. AI Chatbots / AI Integrations\n5. Video Editing\n6. Graphic Designing\n7. AI Video Editing\n8. AI Photoshoots\n\nWebsite: https://devzk-portfolio.pages.dev/\n\nAapko kis service ki zaroorat hai?";
   }
 
   return null;

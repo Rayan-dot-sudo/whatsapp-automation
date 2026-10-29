@@ -1,11 +1,20 @@
 {
   "company_profile": {
     "name": "Devzk",
+    "website": "https://devzk-portfolio.pages.dev/",
     "business_field": "Software Development, AI Solutions & Digital Creative Agency",
     "description": "Devzk is a modern tech and creative agency offering Software Development, Web Development, AI Automations, Chatbots, and Multimedia services.",
     "office_status": "Hum abhi physically office nahi rakhte, hum 100% remotely kaam karte hain (Worldwide / Remote Agency).",
     "working_mode": "Remote / Online",
     "support": "WhatsApp & Online Consultation"
+  },
+  "leadership_and_team": {
+    "ceo_and_founder": "Muhammad Ryan Zubair",
+    "co_founder_and_coo": "Muhammad Toseef",
+    "cmo": "Muhammad Ahmad Kashif",
+    "cto": "Haider Ali",
+    "manager": "Meharzad Waseem",
+    "full_team_list": "• CEO: Muhammad Ryan Zubair\n• COO: Muhammad Toseef\n• CMO: Muhammad Ahmad Kashif\n• CTO: Haider Ali\n• Manager: Meharzad Waseem"
   },
   "services": [
     {
@@ -55,20 +64,35 @@
     }
   ],
   "common_answers": {
+    "ceo_and_founder": {
+      "english": "The CEO and Founder of Devzk is Muhammad Ryan Zubair, and the Co-Founder is Muhammad Toseef.\n\nWebsite: https://devzk-portfolio.pages.dev/",
+      "roman_urdu": "CEO Muhammad Ryan Zubair hain, Founder bhi wahi hain aur Co-Founder Muhammad Toseef hain.\n\nWebsite: https://devzk-portfolio.pages.dev/",
+      "urdu": "سی ای او اور بانی محمد ریان زبیر ہیں اور کو-فاؤنڈر محمد توصیف ہیں۔\n\nویب سائٹ: https://devzk-portfolio.pages.dev/"
+    },
+    "team_members": {
+      "english": "Devzk Team Members:\n• CEO: Muhammad Ryan Zubair\n• COO: Muhammad Toseef\n• CMO: Muhammad Ahmad Kashif\n• CTO: Haider Ali\n• Manager: Meharzad Waseem\n\nWebsite: https://devzk-portfolio.pages.dev/",
+      "roman_urdu": "Devzk Team Members:\n• CEO: Muhammad Ryan Zubair\n• COO: Muhammad Toseef\n• CMO: Muhammad Ahmad Kashif\n• CTO: Haider Ali\n• Manager: Meharzad Waseem\n\nWebsite: https://devzk-portfolio.pages.dev/",
+      "urdu": "Devzk ٹیم ممبران:\n• CEO: Muhammad Ryan Zubair\n• COO: Muhammad Toseef\n• CMO: Muhammad Ahmad Kashif\n• CTO: Haider Ali\n• Manager: Meharzad Waseem\n\nویب سائٹ: https://devzk-portfolio.pages.dev/"
+    },
+    "website": {
+      "english": "You can explore our official website and portfolio here:\nhttps://devzk-portfolio.pages.dev/",
+      "roman_urdu": "Aap hamari official website aur portfolio yahan dekh sakte hain:\nhttps://devzk-portfolio.pages.dev/",
+      "urdu": "آپ ہماری آفیشل ویب سائٹ اور پورٹ فولیو یہاں دیکھ سکتے ہیں:\nhttps://devzk-portfolio.pages.dev/"
+    },
     "company_name": {
-      "english": "Our company name is Devzk.",
-      "roman_urdu": "Hamari company ka naam Devzk hai.",
-      "urdu": "ہماری کمپنی کا نام Devzk ہے۔"
+      "english": "Our company name is Devzk.\nWebsite: https://devzk-portfolio.pages.dev/",
+      "roman_urdu": "Hamari company ka naam Devzk hai.\nWebsite: https://devzk-portfolio.pages.dev/",
+      "urdu": "ہماری کمپنی کا نام Devzk ہے۔\nویب سائٹ: https://devzk-portfolio.pages.dev/"
     },
     "office_location": {
-      "english": "Currently, we don't have a physical office; we work 100% remotely and serve clients globally.",
-      "roman_urdu": "Hamara abhi koi physical office nahi hai, hum mukammal tor par remotely kaam karte hain.",
-      "urdu": "فی الحال ہمارا کوئی فزیکل آفس نہیں ہے، ہم مکمل طور پر ریموٹلی کام کرتے ہیں۔"
+      "english": "Currently, we don't have a physical office; we work 100% remotely and serve clients globally.\nWebsite: https://devzk-portfolio.pages.dev/",
+      "roman_urdu": "Hamara abhi koi physical office nahi hai, hum mukammal tor par remotely kaam karte hain.\nWebsite: https://devzk-portfolio.pages.dev/",
+      "urdu": "فی الحال ہمارا کوئی فزیکل آفس نہیں ہے، ہم مکمل طور پر ریموٹلی کام کرتے ہیں۔\nویب سائٹ: https://devzk-portfolio.pages.dev/"
     },
     "services_summary": {
-      "english": "At Devzk, we provide Software & Web Development, AI Automations, AI Chatbots, Video Editing, Graphic Designing, AI Video Editing, and AI Photoshoots.",
-      "roman_urdu": "Devzk mein hum Software Development, Website Development, AI Automations, AI Chatbots, Video Editing, Graphic Designing, AI Video Editing, aur AI Photoshoots provide karte hain.",
-      "urdu": "ہم سافٹ ویئر، ویب سائٹ ڈویلپمنٹ، اے آئی آٹومیشنز، چیٹ بوٹس، ویڈیو ایڈیٹنگ، گرافک ڈیزائننگ اور اے آئی فوٹو شوٹس کی خدمات فراہم کرتے ہیں۔"
+      "english": "At Devzk, we provide Software & Web Development, AI Automations, AI Chatbots, Video Editing, Graphic Designing, AI Video Editing, and AI Photoshoots.\n\nWebsite: https://devzk-portfolio.pages.dev/",
+      "roman_urdu": "Devzk mein hum Software Development, Website Development, AI Automations, AI Chatbots, Video Editing, Graphic Designing, AI Video Editing, aur AI Photoshoots provide karte hain.\n\nWebsite: https://devzk-portfolio.pages.dev/",
+      "urdu": "ہم سافٹ ویئر، ویب سائٹ ڈویلپمنٹ، اے آئی آٹومیشنز، چیٹ بوٹس، ویڈیو ایڈیٹنگ، گرافک ڈیزائننگ اور اے آئی فوٹو شوٹس کی خدمات فراہم کرتے ہیں۔\n\nویب سائٹ: https://devzk-portfolio.pages.dev/"
     }
   }
 }
