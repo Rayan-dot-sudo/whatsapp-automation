@@ -446,6 +446,8 @@ const server = http.createServer((req, res) => {
   res.end(renderWebPage());
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  log(`🌐 Web Dashboard & Health Endpoint listening on port ${PORT}`);
+const HOST = process.env.IP || '0.0.0.0';
+
+server.listen(PORT, HOST, () => {
+  log(`🌐 Web Dashboard & Health Endpoint listening on ${HOST}:${PORT}`);
 });
