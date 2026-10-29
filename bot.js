@@ -159,6 +159,7 @@ async function startWhatsAppBot() {
     logger: pino({ level: 'silent' }),
     browser: Browsers.windows('Desktop'),
     syncFullHistory: false,
+    markOnlineOnConnect: false,
     getMessage: async () => undefined
   });
 
@@ -249,6 +250,9 @@ async function startWhatsAppBot() {
       latestQrCodeDataUrl = null;
       connectedNumber = myNumber;
       connectedSince = new Date();
+      try {
+        await sock.sendPresenceUpdate('unavailable');
+      } catch (e) {}
       log("\n🎉 =====================================================");
       log(`✅ WHATSAPP CONNECTED SUCCESSFULLY!`);
       log(`📱 Connected Number: +${myNumber}`);
