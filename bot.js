@@ -11,7 +11,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const MODEL_NAME = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+const MODEL_NAME = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
 const LOG_FILE = path.join(process.cwd(), 'bot.log');
 
 let latestQrCodeDataUrl = null;
@@ -79,6 +79,50 @@ ${kb}
 `;
 }
 
+function getFastPathReply(text) {
+  if (!text) return null;
+  const t = text.trim().toLowerCase().replace(/[?!.,'"`]/g, '');
+
+  // 1. Instant Greetings
+  if (/^(hi|hello|hey|hy|hii|helloo|helo|hlo|heyy)$/.test(t)) {
+    return "Hello! Welcome to Devzk. How can we help you today?";
+  }
+  if (/^(salam|assalam|assalam o alaikum|assalamu alaikum|aoa|slaam|asalam|slm)$/.test(t)) {
+    return "Walaikum Assalam! Devzk mein khush amdeed. Hum aapki kya madad kar sakte hain?";
+  }
+  if (/^(اسلام علیکم|سلام|السلام علیکم)$/.test(t)) {
+    return "وعلیکم السلام! Devzk میں خوش آمدید۔ ہم آپ کی کیا مدد کر سکتے ہیں؟";
+  }
+
+  // 2. Company Name
+  if (t === 'company name' || t === 'what is your company name' || t === 'company ka name' || t === 'company ka naam' || t === 'company naam' || (t.includes('company') && (t.includes('name') || t.includes('naam')))) {
+    if (t.includes('what') || t.includes('your') || t.includes('english')) {
+      return "Our company name is Devzk. We provide Software Development, Web Development, AI Automations, and Creative Media services.";
+    }
+    return "Hamari company ka naam Devzk hai. Hum Software Development, Website Development, AI Automations aur Creative services provide karte hain.";
+  }
+
+  // 3. Office Location
+  if ((t.includes('office') || t.includes('location') || t.includes('address')) && 
+      (t.includes('where') || t.includes('kahan') || t.includes('kidhar') || t.includes('address') || t.includes('kider'))) {
+    if (t.includes('where') || t.includes('location')) {
+      return "Currently, we don't have a physical office; we work 100% remotely and serve clients worldwide.";
+    }
+    return "Hamara abhi koi physical office nahi hai, hum mukammal tor par remotely kaam karte hain.";
+  }
+
+  // 4. Services
+  if (/^(services|service|what services|kya services|services list|list of services|services kya hain)$/.test(t) || 
+      (t.includes('service') && (t.includes('kya') || t.includes('what') || t.includes('list') || t.includes('provide')))) {
+    if (t.includes('what') || t.includes('list of')) {
+      return "At Devzk, we provide:\n1. Software Development\n2. Website Development\n3. AI Automations\n4. AI Chatbots / AI Integrations\n5. Video Editing\n6. Graphic Designing\n7. AI Video Editing\n8. AI Photoshoots\n\nWhich service are you interested in?";
+    }
+    return "Devzk mein hum yeh services provide karte hain:\n1. Software Development\n2. Website Development\n3. AI Automations\n4. AI Chatbots / AI Integrations\n5. Video Editing\n6. Graphic Designing\n7. AI Video Editing\n8. AI Photoshoots\n\nAapko kis service ki zaroorat hai?";
+  }
+
+  return null;
+}
+
 async function getGeminiReply(userMessage) {
   if (!GEMINI_API_KEY) {
     return "Salam! Hamari team jald aap se rabta karegi.";
@@ -88,7 +132,7 @@ async function getGeminiReply(userMessage) {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(() => controller.abort(), 10000);
 
     const res = await fetch(endpoint, {
       method: 'POST',
@@ -97,7 +141,7 @@ async function getGeminiReply(userMessage) {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: getSystemInstruction() }] },
         contents: [{ role: "user", parts: [{ text: userMessage }] }],
-        generationConfig: { temperature: 0.3, maxOutputTokens: 250 }
+        generationConfig: { temperature: 0.2, maxOutputTokens: 100 }
       })
     });
 
@@ -106,10 +150,10 @@ async function getGeminiReply(userMessage) {
     const data = await res.json();
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (reply) return reply.trim();
-    return "Salam! Shukriya aapke message ka. Hamari team jald aapki rehnumai karegi.";
+    return "Salam! Shukriya aapke message ka. Devzk team jald aapki rehnumai karegi.";
   } catch (err) {
     log(`❌ Gemini API error: ${err.message}`);
-    return "Salam! Hamari team jald aapke sawal ka jawab degi.";
+    return "Salam! Devzk team jald aapke sawal ka jawab degi.";
   }
 }
 
@@ -344,9 +388,27 @@ async function startWhatsAppBot() {
       const senderDisplay = isSelfChat ? `Self-Chat (${myPhone})` : remoteNum;
       log(`\n📩 [Message Received] From ${senderDisplay}: "${queryText}"`);
 
-      // Generate AI response via Gemini
-      const reply = await getGeminiReply(queryText);
-      log(`🤖 [AI Auto-Reply] To ${senderDisplay}: "${reply}"`);
+      // 1. Send typing indicator immediately (shows 'typing...' on WhatsApp in 0.1s!)
+      try {
+        await sock.sendPresenceUpdate('composing', remoteJid);
+      } catch (e) {}
+
+      // 2. Check instant fast-path (sub-second response for greetings & FAQs)
+      let reply = getFastPathReply(queryText);
+      let isFast = true;
+
+      // 3. If not in fast-path, call Gemini AI
+      if (!reply) {
+        isFast = false;
+        reply = await getGeminiReply(queryText);
+      }
+
+      // 4. Stop typing indicator
+      try {
+        await sock.sendPresenceUpdate('paused', remoteJid);
+      } catch (e) {}
+
+      log(`🤖 [AI Auto-Reply${isFast ? ' (Instant ⚡)' : ''}] To ${senderDisplay}: "${reply}"`);
 
       // Send reply
       try {
