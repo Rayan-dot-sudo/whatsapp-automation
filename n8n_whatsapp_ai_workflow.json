@@ -1,0 +1,155 @@
+{
+  "name": "WhatsApp AI Customer Support Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-webhook",
+        "options": {}
+      },
+      "id": "node-webhook-trigger",
+      "name": "WhatsApp Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "whatsapp-webhook-entry"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract incoming WhatsApp message\nconst body = $input.first().json.body || $input.first().json;\n\ntry {\n  const entry = body.entry?.[0];\n  const changes = entry?.changes?.[0]?.value;\n  const message = changes?.messages?.[0];\n  \n  if (!message || message.type !== 'text') {\n    return []; // Ignore non-text or delivery receipts\n  }\n  \n  const sender = message.from;\n  const userText = message.text?.body;\n  \n  return [{\n    json: {\n      sender: sender,\n      message: userText,\n      timestamp: message.timestamp\n    }\n  }];\n} catch (e) {\n  return [];\n}"
+      },
+      "id": "node-extract-message",
+      "name": "Extract Message Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={{ $env.GEMINI_API_KEY }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\"text\": \"You are a professional customer support executive. Answer naturally in 1-3 sentences in the customer's language (Roman Urdu or English).\\n\\nCustomer Question: \" + $json.message}\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "node-gemini-ai",
+      "name": "Gemini AI Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiReply = $input.first().json?.candidates?.[0]?.content?.parts?.[0]?.text || \"Salam! Hamari team jald aap se rabta karegi.\";\nconst sender = $('Extract Message Data').first().json.sender;\n\nreturn [{\n  json: {\n    sender: sender,\n    replyText: aiReply.trim()\n  }\n}];"
+      },
+      "id": "node-format-reply",
+      "name": "Format WhatsApp Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        920,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $env.PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.WHATSAPP_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.sender }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.replyText }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "node-send-whatsapp",
+      "name": "Send WhatsApp Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "WhatsApp Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Message Data": {
+      "main": [
+        [
+          {
+            "node": "Gemini AI Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini AI Engine": {
+      "main": [
+        [
+          {
+            "node": "Format WhatsApp Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format WhatsApp Reply": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

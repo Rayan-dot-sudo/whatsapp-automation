@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp AI Automation Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0b141a;
+      --bg-panel: #111b21;
+      --bg-card: #202c33;
+      --bg-hover: #182229;
+      --accent-green: #00a884;
+      --accent-green-glow: rgba(0, 168, 132, 0.2);
+      --accent-blue: #53bdeb;
+      --text-main: #e9edef;
+      --text-muted: #8696a0;
+      --border: #222e35;
+      --msg-outgoing: #005c4b;
+      --msg-incoming: #202c33;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 0 15px var(--accent-green-glow);
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .top-stats {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 168, 132, 0.1);
+      border: 1px solid rgba(0, 168, 132, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Main Dashboard Layout */
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 320px 1fr 340px;
+      flex: 1;
+      height: calc(100vh - 64px);
+      overflow: hidden;
+    }
+
+    /* Left Sidebar: Conversations */
+    .conversations-sidebar {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .chat-list {
+      list-style: none;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .chat-item {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chat-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .chat-item.active {
+      background: var(--bg-card);
+      border-left: 3px solid var(--accent-green);
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #2a3942;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 15px;
+      color: #d1d7db;
+      flex-shrink: 0;
+    }
+
+    .chat-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .chat-name {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .chat-preview {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(0, 168, 132, 0.15);
+      color: var(--accent-green);
+      margin-top: 4px;
+    }
+
+    /* Middle Section: Chat Window */
+    .chat-window {
+      background: #0b141a;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .chat-header {
+      background: var(--bg-panel);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .current-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .current-user-name {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .current-user-status {
+      font-size: 12px;
+      color: var(--accent-green);
+    }
+
+    .messages-area {
+      flex: 1;
+      padding: 24px 32px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background-image: radial-gradient(#182229 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .msg-bubble {
+      max-width: 65%;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      position: relative;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-bubble.incoming {
+      align-self: flex-start;
+      background: var(--msg-incoming);
+      color: var(--text-main);
+      border-top-left-radius: 2px;
+    }
+
+    .msg-bubble.outgoing {
+      align-self: flex-end;
+      background: var(--msg-outgoing);
+      color: #e9edef;
+      border-top-right-radius: 2px;
+    }
+
+    .msg-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .ai-tag {
+      font-size: 9px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #53bdeb;
+      font-weight: 600;
+    }
+
+    /* Message Input Box */
+    .input-bar {
+      background: var(--bg-panel);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .input-bar input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 18px;
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-bar input:focus {
+      border-color: var(--accent-green);
+    }
+
+    .send-btn {
+      background: var(--accent-green);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .send-btn:hover {
+      background: #009575;
+    }
+
+    /* Right Sidebar: Knowledge Base & Controls */
+    .controls-sidebar {
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      padding: 24px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .control-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .toggle-label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toggle-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Modern Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #3b4a54;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent-green);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .kb-summary-item {
+      font-size: 13px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .kb-summary-item span:first-child {
+      color: var(--text-muted);
+    }
+
+    .kb-summary-item span:last-child {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .action-btn {
+      width: 100%;
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: var(--border);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">W</div>
+      <div>
+        <div class="brand-title">WhatsApp AI Automation Hub</div>
+        <div class="brand-subtitle">Company Support Engine (24/7 Active)</div>
+      </div>
+    </div>
+    <div class="top-stats">
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <span>AI Engine 24/7 Online</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main 3-Column Dashboard -->
+  <div class="dashboard-container">
+    
+    <!-- Column 1: Conversations List -->
+    <aside class="conversations-sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Active Conversations</span>
+        <span style="font-size: 12px; color: var(--accent-green); font-weight: 600;">3 Online</span>
+      </div>
+      <ul class="chat-list" id="chatList">
+        <li class="chat-item active" onclick="selectChat(0)">
+          <div class="avatar">AK</div>
+          <div class="chat-info">
+            <div class="chat-row-top">
+              <span class="chat-name">+92 301 8492041</span>
+              <span class="chat-time">Just now</span>
+            </div>
+            <div class="chat-preview">Aapki web service ki pricing kya hai?</div>
+            <span class="chat-badge">AI Active</span>
+          </div>
+        </li>
+        <li class="chat-item" onclick="selectChat(1)">
+          <div class="avatar">MS</div>
+          <div class="chat-info">
+            <div class="chat-row-top">
+              <span class="chat-name">+92 321 5501923</span>
+              <span class="chat-time">2m ago</span>
+            </div>
+            <div class="chat-preview">Office visit ke timings kya hain?</div>
+            <span class="chat-badge">AI Active</span>
+          </div>
+        </li>
+        <li class="chat-item" onclick="selectChat(2)">
+          <div class="avatar">HR</div>
+          <div class="chat-info">
+            <div class="chat-row-top">
+              <span class="chat-name">+92 345 7788112</span>
+              <span class="chat-time">15m ago</span>
+            </div>
+            <div class="chat-preview">Human agent se baat karni hai.</div>
+            <span class="chat-badge" style="background: rgba(234, 179, 8, 0.15); color: #eab308;">Pending Human</span>
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Column 2: Live WhatsApp Chat Window -->
+    <main class="chat-window">
+      <div class="chat-header">
+        <div class="current-user">
+          <div class="avatar" id="currentAvatar">AK</div>
+          <div>
+            <div class="current-user-name" id="currentPhone">+92 301 8492041</div>
+            <div class="current-user-status">Customer Direct Message (WhatsApp)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Area -->
+      <div class="messages-area" id="messagesContainer">
+        <div class="msg-bubble incoming">
+          Aapki service ki price kya hai aur kitne din mein kaam hoga?
+          <div class="msg-meta">
+            <span>18:14</span>
+          </div>
+        </div>
+        <div class="msg-bubble outgoing">
+          Hamari Web Development service Rs. 35,000 se shuru hoti hai aur 7-10 working days mein delivery hoti hai. Kya aapko mazeed details chahiyein?
+          <div class="msg-meta">
+            <span class="ai-tag">Gemini AI</span>
+            <span>18:14</span>
+            <span style="color: #53bdeb;">✓✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div class="input-bar">
+        <input type="text" id="userInput" placeholder="Test a question (e.g. Office kahan hai?)..." onkeypress="handleKey(event)">
+        <button class="send-btn" onclick="sendTestMessage()">
+          <span>Send</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+    </main>
+
+    <!-- Column 3: Controls & Knowledge Base -->
+    <aside class="controls-sidebar">
+      
+      <!-- System Controls -->
+      <div class="control-card">
+        <div class="card-title">Automation Control</div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">AI Auto-Reply</div>
+            <div class="toggle-desc">Gemini answers customer queries automatically</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="aiToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row" style="margin-top: 14px;">
+          <div>
+            <div class="toggle-label">Human Takeover</div>
+            <div class="toggle-desc">Pause AI for this chat to reply manually</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="humanToggle" onchange="toggleHuman(this)">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Company Knowledge Base Status -->
+      <div class="control-card">
+        <div class="card-title">Company Knowledge Base</div>
+        <div class="kb-summary-item">
+          <span>Active File:</span>
+          <span>knowledge.json</span>
+        </div>
+        <div class="kb-summary-item">
+          <span>Company:</span>
+          <span>Apni Company</span>
+        </div>
+        <div class="kb-summary-item">
+          <span>Services Loaded:</span>
+          <span>2 Active</span>
+        </div>
+        <div class="kb-summary-item">
+          <span>Office Hours:</span>
+          <span>10 AM - 7 PM</span>
+        </div>
+
+        <button class="action-btn" onclick="alert('knowledge.json file open kar ke aap mazeed services aur prices add kar sakte hain!')">
+          View & Edit Knowledge
+        </button>
+      </div>
+
+      <!-- Quick Tips -->
+      <div class="control-card" style="border-left: 3px solid var(--accent-blue);">
+        <div style="font-size: 12px; font-weight: 700; color: var(--accent-blue); margin-bottom: 6px;">ZERO-COST GUARANTEE</div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          Yeh system Render par 24/7 chalega aur Meta Cloud API se connected hoga. Laptop band hone par bhi replies jaate rahenge.
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <script>
+    const sampleChats = [
+      {
+        phone: "+92 301 8492041",
+        avatar: "AK",
+        messages: [
+          { type: "incoming", text: "Aapki service ki price kya hai aur kitne din mein kaam hoga?", time: "18:14" },
+          { type: "outgoing", text: "Hamari Web Development service Rs. 35,000 se shuru hoti hai aur 7-10 working days mein delivery hoti hai. Kya aapko mazeed details chahiyein?", time: "18:14", ai: true }
+        ]
+      },
+      {
+        phone: "+92 321 5501923",
+        avatar: "MS",
+        messages: [
+          { type: "incoming", text: "Assalam o Alaikum, office visit ke timings kya hain?", time: "18:10" },
+          { type: "outgoing", text: "Walaikum Assalam! Hamara office Monday se Saturday subah 10:00 AM se shaam 7:00 PM tak open hota hai.", time: "18:10", ai: true }
+        ]
+      },
+      {
+        phone: "+92 345 7788112",
+        avatar: "HR",
+        messages: [
+          { type: "incoming", text: "Mujhe custom bulk project ke liye human agent se baat karni hai.", time: "17:55" },
+          { type: "outgoing", text: "Ji zaroor! Main ne aapki request note kar li hai, hamara representative jald hi isi chat par aap se rabta karega.", time: "17:55", ai: true }
+        ]
+      }
+    ];
+
+    let currentChatIndex = 0;
+
+    function selectChat(index) {
+      currentChatIndex = index;
+      document.querySelectorAll('.chat-item').forEach((item, i) => {
+        item.classList.toggle('active', i === index);
+      });
+
+      const chat = sampleChats[index];
+      document.getElementById('currentPhone').innerText = chat.phone;
+      document.getElementById('currentAvatar').innerText = chat.avatar;
+
+      renderMessages();
+    }
+
+    function renderMessages() {
+      const container = document.getElementById('messagesContainer');
+      container.innerHTML = '';
+      const chat = sampleChats[currentChatIndex];
+
+      chat.messages.forEach(msg => {
+        const bubble = document.createElement('div');
+        bubble.className = `msg-bubble ${msg.type}`;
+        bubble.innerHTML = `
+          ${msg.text}
+          <div class="msg-meta">
+            ${msg.ai ? '<span class="ai-tag">Gemini AI</span>' : ''}
+            <span>${msg.time}</span>
+            ${msg.type === 'outgoing' ? '<span style="color: #53bdeb;">✓✓</span>' : ''}
+          </div>
+        `;
+        container.appendChild(bubble);
+      });
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter') sendTestMessage();
+    }
+
+    async function sendTestMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chat = sampleChats[currentChatIndex];
+      const now = new Date();
+      const timeStr = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      // 1. Add incoming message
+      chat.messages.push({ type: "incoming", text: text, time: timeStr });
+      renderMessages();
+      input.value = '';
+
+      // Check if Human Takeover is active
+      const isHuman = document.getElementById('humanToggle').checked;
+      if (isHuman) {
+        setTimeout(() => {
+          chat.messages.push({
+            type: "outgoing",
+            text: "(Human Agent Mode active. AI reply is paused for this session.)",
+            time: timeStr,
+            ai: false
+          });
+          renderMessages();
+        }, 600);
+        return;
+      }
+
+      // Try local FastAPI backend, or fallback to smart simulation
+      try {
+        const response = await fetch("http://localhost:8000/test-chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          chat.messages.push({ type: "outgoing", text: data.ai_response, time: timeStr, ai: true });
+          renderMessages();
+          return;
+        }
+      } catch (e) {
+        // Fallback simulation when localhost:8000 is not yet running
+      }
+
+      setTimeout(() => {
+        let simulatedReply = "Ji zaroor! Hamari team aapki mukammal rehnumai karegi.";
+        const lower = text.toLowerCase();
+        if (lower.includes("price") || lower.includes("rate") || lower.includes("paisa") || lower.includes("qeemat")) {
+          simulatedReply = "Hamari services Rs. 10,000 se shuru hoti hain. Delivery time 3-5 working days hai.";
+        } else if (lower.includes("office") || lower.includes("timing") || lower.includes("address") || lower.includes("kahan")) {
+          simulatedReply = "Hamara office Monday se Saturday subah 10:00 AM se shaam 7:00 PM tak open hota hai.";
+        }
+
+        chat.messages.push({ type: "outgoing", text: simulatedReply, time: timeStr, ai: true });
+        renderMessages();
+      }, 700);
+    }
+
+    function toggleHuman(toggle) {
+      if (toggle.checked) {
+        alert("Human Takeover Active: AI pauses answering this customer. You can answer manually.");
+      }
+    }
+  </script>
+</body>
+</html>

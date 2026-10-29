@@ -1,0 +1,47 @@
+{
+  "company_profile": {
+    "name": "Apni Company Ka Naam",
+    "business_field": "Services / E-commerce / Tech / Trading",
+    "description": "Hum customers ko best quality services aur products provide karte hain.",
+    "support_phone": "+92 300 0000000",
+    "office_address": "Office #12, Commercial Area, City Name",
+    "working_days": "Monday se Saturday",
+    "working_hours": "Subah 10:00 AM se Shaam 7:00 PM tak",
+    "sunday_status": "Sunday ko office band rehta hai, lekin online queries receive hoti hain"
+  },
+  "services_and_products": [
+    {
+      "title": "Service / Product 1",
+      "price": "Rs. 10,000",
+      "description": "Service 1 ki mukhtasar tafseel aur delivery time (e.g. 3-5 days)."
+    },
+    {
+      "title": "Service / Product 2",
+      "price": "Rs. 25,000",
+      "description": "Service 2 ki mukhtasar tafseel aur delivery time (e.g. 7 days)."
+    }
+  ],
+  "payment_methods": [
+    "Bank Transfer (Meezan Bank, HBL)",
+    "JazzCash",
+    "EasyPaisa",
+    "SadaPay / NayaPay"
+  ],
+  "faqs": [
+    {
+      "question": "Aap ka office kahan hai?",
+      "answer": "Hamara office [City Name] mein waqay hai. Working hours (10 AM - 7 PM) ke doran aap visit kar sakte hain."
+    },
+    {
+      "question": "Kya payment advance hoti hai?",
+      "answer": "Ji haan, kaam shuru karne ke liye 50% advance aur baqi payment kaam mukammal hone par hoti hai."
+    },
+    {
+      "question": "Mujhe human representative se baat karni hai",
+      "answer": "Ji zaroor! Main ne aapki request team ko note karwa di hai. Hamara representative jald hi isi chat par aap se rabta karega."
+    }
+  ],
+  "escalation_policy": {
+    "unknown_query": "Agar customer koi aisi cheez pooche jo is file mein na ho, toh andaza mat lagao. Polite tareeqay se kaho: 'Main ne aapka sawal note kar liya hai, hamari team ka representative jald aap se rabta kar ke mukammal rehnumai karega.'"
+  }
+}

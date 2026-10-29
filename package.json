@@ -1,0 +1,21 @@
+{
+  "name": "whatsapp-ai-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp AI Auto-reply Bot via QR code",
+  "main": "bot.js",
+  "type": "module",
+  "scripts": {
+    "start": "node bot.js",
+    "reset": "node -e \"const fs = require('fs'); fs.rmSync('./auth_info', { recursive: true, force: true }); console.log('Session reset complete!');\""
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.19",
+    "dotenv": "^16.4.7",
+    "pino": "^9.6.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
