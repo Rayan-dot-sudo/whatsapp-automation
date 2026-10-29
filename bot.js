@@ -550,40 +550,16 @@ async function startWhatsAppBot() {
         }
       }
 
-      // --- HUMAN TAKEOVER / OWNER INTERVENTION ---
+      // --- 100% INVISIBLE AUTO-TAKEOVER ---
+      // Whenever YOU send ANY message from your phone to a customer,
+      // the bot automatically and silently mutes itself for this customer.
+      // Zero commands needed. Customer will never know AI exists or stopped!
       if (msg.key.fromMe && !isSelfChat) {
-        const cleanCmd = messageText.trim().toLowerCase();
-
-        // Manual command: Resume AI for this chat
-        if (cleanCmd === '!start' || cleanCmd === '!resume' || cleanCmd === '!ai on' || cleanCmd === '!bot on') {
-          pausedChats.delete(remoteJid);
-          savePausedChats(pausedChats);
-          log(`▶️ [AI Resumed] You resumed AI auto-reply for ${remoteNum}`);
-          try {
-            await sock.sendMessage(remoteJid, { text: "🤖 [Devzk AI resumed for this chat]" });
-          } catch (e) {}
-          continue;
-        }
-
-        // Manual command: Pause AI for this chat
-        if (cleanCmd === '!stop' || cleanCmd === '!pause' || cleanCmd === '!ai off' || cleanCmd === '!bot off') {
-          const pauseUntil = Date.now() + PAUSE_DURATION_MS;
-          pausedChats.set(remoteJid, pauseUntil);
-          savePausedChats(pausedChats);
-          log(`⏸️ [AI Paused Manually] You paused AI auto-reply for ${remoteNum} for 24 hours.`);
-          try {
-            await sock.sendMessage(remoteJid, { text: "⏸️ [Devzk AI paused. Human representative is handling this chat]" });
-          } catch (e) {}
-          continue;
-        }
-
-        // Automatic Human Takeover: If you send ANY normal message from your phone to this client,
-        // automatically pause the AI for 24 hours so you can talk freely without AI interruption!
         if (!isExplicitTest) {
           const pauseUntil = Date.now() + PAUSE_DURATION_MS;
           pausedChats.set(remoteJid, pauseUntil);
           savePausedChats(pausedChats);
-          log(`👤 [Human Takeover] You sent a message to ${remoteNum}. AI auto-reply paused for 24 hours on this chat.`);
+          log(`👤 [Human Takeover] You sent a message to ${remoteNum}. Bot silently muted for this chat.`);
           continue;
         }
       }
